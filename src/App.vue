@@ -1,19 +1,28 @@
 <script setup>
+import { ref } from 'vue';
 import ButtonCounter from './components/ButtonCounter.vue'
 import BlogPost from './components/BlogPost.vue';
-import { ref } from 'vue';
+import PaginatePost from './components/PaginatePost.vue';
 
-const posts= ref([
+
+/*const posts= ref([
   {title:'Post 1', id:1,body:'descripcion 1'},
   {title:'Post 2', id:2,body:'descripcion 2'},
   {title:'Post 3', id:3,body:'descripcion 3'},
   {title:'Post 4', id:4},
-])
-
-const favorito=ref('')
+])*/
+const posts=ref([])
+  
+const favorito=ref("")
 const cambiarFavorito=(title)=>{
   favorito.value=title;
 }
+// Es mejor Usar el Emit para las funciones y no pasar las funciones como props
+
+fetch('https://jsonplaceholder.typicode.com/posts')
+.then(res=>res.json())
+.then((data)=>posts.value=data)
+
 </script>
 
 <template>
@@ -30,14 +39,20 @@ const cambiarFavorito=(title)=>{
     -->
     <!--Segunda forma de crear los objetos recorriendo el objeto-->
     <h2 >Mi post favoritos: {{favorito}}</h2>
+
+    <PaginatePost class="mb-2"/>  
     <BlogPost
     v-for="post in posts"
     :key="post.id"
     :title="post.title"
     :id="post.id"
     :body="post.body"
-    @cambiarFavorito="cambiarFavorito"
+    :cambiarFavorito="cambiarFavorito"
+    class="mb-2"
+
     ></BlogPost>
+
+
 
     
   </div>
