@@ -21,6 +21,16 @@ const favorito=ref("")
 const cambiarFavorito=(title)=>{
   favorito.value=title;
 }
+
+const next=()=>{
+  inicio.value=inicio.value+xpag;
+  fin.value=fin.value+xpag;
+}
+
+const prev=()=>{
+  inicio.value+= -xpag;
+  fin.value+= -xpag;
+}
 // Es mejor Usar el Emit para las funciones y no pasar las funciones como props
 
 fetch('https://jsonplaceholder.typicode.com/posts')
@@ -32,7 +42,7 @@ console.log("Agregando cambios");
 
 <template>
   <div class="container">
-    <h1 >App Componentses</h1>
+    <h1 >App</h1>
     <ButtonCounter></ButtonCounter>
     
     <!-- Esta es la primera forma de realizar los objetos-->
@@ -44,8 +54,9 @@ console.log("Agregando cambios");
     -->
     <!--Segunda forma de crear los objetos recorriendo el objeto-->
     <h2 >Mi post favoritos: {{favorito}}</h2>
-
-    <PaginatePost class="mb-2"/>  
+    <button @click="next">Next provisorio</button>
+    <button @click="prev">Prev provisorio</button>
+    <PaginatePost class="mb-2 positive"/>  
     <BlogPost
     v-for="post in posts.slice(inicio,fin)"
     :key="post.id"
@@ -62,3 +73,19 @@ console.log("Agregando cambios");
     
   </div>
 </template>
+
+<style>
+.container{
+  background-color: beige;
+  color: black;
+}
+.positive{
+  color:aqua
+}
+.negative{
+  color:red
+}
+.zero{
+  color: tomato
+}
+</style>
