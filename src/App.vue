@@ -11,7 +11,11 @@ import PaginatePost from './components/PaginatePost.vue';
   {title:'Post 3', id:3,body:'descripcion 3'},
   {title:'Post 4', id:4},
 ])*/
+//V
 const posts=ref([])
+const xpag=10
+const inicio=ref(0)
+const fin=ref(xpag)
   
 const favorito=ref("")
 const cambiarFavorito=(title)=>{
@@ -43,7 +47,7 @@ console.log("Agregando cambios");
 
     <PaginatePost class="mb-2"/>  
     <BlogPost
-    v-for="post in posts"
+    v-for="post in posts.slice(inicio,fin)"
     :key="post.id"
     :title="post.title"
     :id="post.id"
