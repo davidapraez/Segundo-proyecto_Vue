@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import ButtonCounter from './components/ButtonCounter.vue'
 import BlogPost from './components/BlogPost.vue';
 import PaginatePost from './components/PaginatePost.vue';
-
+import LoadingSpinner from './components/LoadingSpinner.vue';
 
 /*const posts= ref([
   {title:'Post 1', id:1,body:'descripcion 1'},
@@ -16,6 +16,9 @@ const posts=ref([])
 const xpag=10
 const inicio=ref(0)
 const fin=ref(xpag)
+const loading=ref(true)
+
+
   
 const favorito=ref("")
 const cambiarFavorito=(title)=>{
@@ -32,19 +35,48 @@ const prev=()=>{
   fin.value+= -xpag;
 }
 // Es mejor Usar el Emit para las funciones y no pasar las funciones como props
-
+/*onMounted(async()=>{
+  loading.value=true
+  try{
+    const res=await fetch('https://jsonplaceholder.typicode.com/posts')
+    posts.value=await res.json()
+  }catch{
+    console.log(console.error());
+  }
+  finally{
+    loading.value=false
+  }
+})*/
+/*
 fetch('https://jsonplaceholder.typicode.com/posts')
 .then(res=>res.json())
 .then((data)=>posts.value=data)
+.finally(()=>loading.value=false)
+*/
+//const maxLength=computed(()=>posts.value.length)
 
-console.log("Agregando cambios");
+const fetchData =async()=>{
+  try{
+    const res=await fetch('https://jsonplaceholder.typicode.com/posts')
+    posts.value=await res.json()
+  }catch(error){
+    console.log(error)
+  }finally{
+    loading.value=false
+  }
+}
+fetchData()
+
+console.log("22-11-2022");
 </script>
 
 <template>
-  <div class="container">
-    <h1 >App</h1>
-    <ButtonCounter></ButtonCounter>
+  <LoadingSpinner v-if="loading"/>
+  <div class="container" v-else>
     
+    
+    <h1 >App</h1>
+    <!--<ButtonCounter></ButtonCounter>-->
     <!-- Esta es la primera forma de realizar los objetos-->
     <!--
     <BlogPost title="Post1" :id="1" body="descripcion 1" colorText="primary"></BlogPost>
@@ -54,9 +86,15 @@ console.log("Agregando cambios");
     -->
     <!--Segunda forma de crear los objetos recorriendo el objeto-->
     <h2 >Mi post favoritos: {{favorito}}</h2>
-    <button @click="next">Next provisorio</button>
-    <button @click="prev">Prev provisorio</button>
-    <PaginatePost class="mb-2 positive"/>  
+    <PaginatePost 
+    @next="next" 
+    @prev="prev"
+    :inicio="inicio"
+    :fin="fin"
+    :tamanio="posts.length" 
+    class="mb-2 positive"
+    
+    />  
     <BlogPost
     v-for="post in posts.slice(inicio,fin)"
     :key="post.id"
@@ -65,16 +103,19 @@ console.log("Agregando cambios");
     :body="post.body"
     :cambiarFavorito="cambiarFavorito"
     class="mb-2"
+    
 
     ></BlogPost>
-
-
 
     
   </div>
 </template>
 
 <style>
+h2{
+  color: #002F8F;
+   
+}
 .container{
   background-color: beige;
   color: black;
